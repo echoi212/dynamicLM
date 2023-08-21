@@ -35,7 +35,6 @@ check_evaluation_inputs <- function(
   if ((split.method == "bootcv") && (!missing(data))) {
     message("Bootstrapping is performed with data from the original model, ",
             "argument data is ignored.")
-
   }
 
   # check elements of object are the correct classes
@@ -218,10 +217,25 @@ check_evaluation_inputs <- function(
 
       preds.b <- do.call("cbind", lapply(1:NF, function(f) {
         original_model <- object[[f]]
-        args <- original_model$args
+
+        # args <- original_model$args
+        args <- as.list(original_model$args)
         args$lmdata <- NULL
-        args$lmdata <- data_train_b
-        model.b <- eval(args, envir = globalenv())
+        # args$lmdata <- data_train_b
+        # model.b <- eval(args, envir = globalenv())
+
+        args[[1]] <- data_train_b
+        model.b <- do.call(dynamic_lm, args, envir = globalenv())
+
+        # checked_input <- match.call()
+        # m <- match(c("object", "times", "formula", "data", "lms", "id_col",
+        #              "split.method", "B", "M", "cores", "seed", "cause"),
+        #            names(checked_input), 0L)
+        # checked_input <- as.list(checked_input[m])
+        # checked_input <- do.call(check_evaluation_inputs, checked_input,
+        #                          envir = parent.frame())
+        #
+
         base_data <- 0 * model.b$model$coefficients
 
         pred.b <- try(
