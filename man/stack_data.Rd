@@ -17,7 +17,9 @@ stack_data(
 )
 }
 \arguments{
-\item{data}{Data frame from which to construct landmark super dataset}
+\item{data}{Data frame from which to construct landmark super dataset. Note
+that covariates must be numeric, so, factors/categorical variables must
+be transformed into dummy variables.}
 
 \item{outcome}{A list with items time and status, containing strings
 identifying the names of time and status variables, respectively, of the
@@ -33,7 +35,8 @@ time w landmark points)}
 
 \item{covs}{A list with items fixed and varying, containing character strings
 specifying column names in the data containing time-fixed and time-varying
-covariates, respectively.}
+covariates, respectively. Note that these covariates must be numeric, so,
+factors/categorical variables must be transformed into dummy variables.}
 
 \item{format}{Character string specifying whether the original data are in
 wide (default) or in long format.}

@@ -15,7 +15,8 @@ end_time (see \code{\link[=stack_data]{stack_data()}} for further description of
 and w), end_time is the largest landmarking time.}
 
 \item{lm_covs}{Vector of strings indicating the columns (covariates) that are
-to have an interaction with the landmark times.}
+to have an interaction with the landmark times. These columns must be
+numeric.}
 
 \item{func_covars}{Either a string/vector of strings or list of
 functions specifying which covariate-landmark interactions to include.
