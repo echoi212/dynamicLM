@@ -66,10 +66,7 @@
 #'   tested and should be used with precaution.
 #' @param silent Show any error messages when computing `score` for each
 #'   landmark time (and potentially bootstrap iteration)
-#' @param na.rm Ignore bootstraps where there are errors (for example not
-#'   enough datasamples) and calculate metrics on remaining values. This is not
-#'   recommended. For example, if only one bootstrap sampling has enough data
-#'   that live to the prediction window, the standard error will be zero.
+#' @param na.rm (Not implemented yet)
 #' @return An object of class "LMScore", which has components:
 #'   - `auct`: dataframe containing time-dependent AUC if "auc" was
 #'     included as a metric
@@ -82,15 +79,15 @@
 #'   and are left as NA". In this case, consider only evaluating for earlier
 #'   landmarks or performing prediction with a smaller window as data points are
 #'   slim. If you wish to see which model/bootstrap/landmark times failed, set
-#'   SILENT=FALSE. Set na.rm = TRUE ignores these bootstraps and calculate
-#'   metrics from the bootstrap samples that worked (not recommended).
+#'   SILENT=FALSE.
 #'
 #'   Another message may occur: "Dropping bootstrap b = {X} for model {name} due
 #'   to unreliable predictions". As certain approximations are made, numerical
 #'   overflow sometimes occurs in predictions for bootstrapped samples. To avoid
 #'   potential errors, the whole bootstrap sample is dropped in this case. Note
 #'   that input data should be complete otherwise this may occur
-#'   unintentionally.
+#'   unintentionally. Consider increasing B if this occurs for too many samples,
+#'   otherwise, results may have lower coverage than you intend.
 #'
 #' @references Paul Blanche, Cecile Proust-Lima, Lucie Loubere, Claudine Berr,
 #'   Jean- Francois Dartigues, and Helene Jacqmin-Gadda. Quantifying and
@@ -299,13 +296,13 @@ score <-
       if (se.fit == TRUE) {
         alpha <- 1 - conf.int
         auct_out <- auct[, data.table::data.table(
-          mean(.SD[["AUC"]], na.rm = na.rm),
+          mean(.SD[["AUC"]], na.rm = TRUE),
           se = stats::sd(.SD[["AUC"]], na.rm = TRUE),
           lower = stats::quantile(.SD[["AUC"]], alpha / 2, na.rm = TRUE),
           upper = stats::quantile(.SD[["AUC"]], (1 - alpha / 2), na.rm = TRUE)
         ), by = c("model", "tLM"), .SDcols = "AUC"]
         briert_out <- briert[, data.table::data.table(
-          mean(.SD[["Brier"]], na.rm = na.rm),
+          mean(.SD[["Brier"]], na.rm = TRUE),
           se = stats::sd(.SD[["Brier"]], na.rm = TRUE),
           lower = stats::quantile(.SD[["Brier"]], alpha / 2, na.rm = TRUE),
           upper = stats::quantile(.SD[["Brier"]], (1 - alpha / 2), na.rm = TRUE)
@@ -326,19 +323,19 @@ score <-
                                   collapse = ", ")))
           }
         }
-        if (na.rm == FALSE) {
-          auct_out <- auct_out[is.na(auct_out[, 3]),
-                               `:=`("se" = NA, "lower" = NA, "upper" = NA)]
-          briert_out <- briert_out[is.na(briert_out[, 3]),
-                                   `:=`("se" = NA, "lower" = NA, "upper" = NA)]
-        }
+        # if (na.rm == FALSE) {
+          # auct_out <- auct_out[is.na(auct_out[, 3]),
+          #                      `:=`("se" = NA, "lower" = NA, "upper" = NA)]
+          # briert_out <- briert_out[is.na(briert_out[, 3]),
+          #                          `:=`("se" = NA, "lower" = NA, "upper" = NA)]
+        # }
 
       } else {
         auct_out <- auct[, data.table::data.table(
-          mean(.SD[["AUC"]], na.rm = na.rm)
+          mean(.SD[["AUC"]], na.rm = TRUE)
         ), by = c("model", "tLM"), .SDcols = "AUC"]
         briert_out <- briert[, data.table::data.table(
-          mean(.SD[["Brier"]], na.rm = na.rm)
+          mean(.SD[["Brier"]], na.rm = TRUE)
         ), by = c("model", "tLM"), .SDcols = "Brier"]
         data.table::setnames(auct_out, c("model", "tLM", "AUC"))
         data.table::setnames(briert_out, c("model", "tLM", "Brier"))
