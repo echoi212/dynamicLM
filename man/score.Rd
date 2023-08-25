@@ -89,10 +89,7 @@ this is inferred from object.}
 \item{silent}{Show any error messages when computing \code{score} for each
 landmark time (and potentially bootstrap iteration)}
 
-\item{na.rm}{Ignore bootstraps where there are errors (for example not
-enough datasamples) and calculate metrics on remaining values. This is not
-recommended. For example, if only one bootstrap sampling has enough data
-that live to the prediction window, the standard error will be zero.}
+\item{na.rm}{(Not implemented yet)}
 
 \item{...}{Additional arguments to pass to \code{\link[riskRegression:Score]{riskRegression::Score()}}.
 These arguments have been included for user flexibility but have not been
@@ -134,15 +131,15 @@ Results at evaluation time(s) beyond these points could not be computed
 and are left as NA". In this case, consider only evaluating for earlier
 landmarks or performing prediction with a smaller window as data points are
 slim. If you wish to see which model/bootstrap/landmark times failed, set
-SILENT=FALSE. Set na.rm = TRUE ignores these bootstraps and calculate
-metrics from the bootstrap samples that worked (not recommended).
+SILENT=FALSE.
 
 Another message may occur: "Dropping bootstrap b = {X} for model {name} due
 to unreliable predictions". As certain approximations are made, numerical
 overflow sometimes occurs in predictions for bootstrapped samples. To avoid
 potential errors, the whole bootstrap sample is dropped in this case. Note
 that input data should be complete otherwise this may occur
-unintentionally.
+unintentionally. Consider increasing B if this occurs for too many samples,
+otherwise, results may have lower coverage than you intend.
 }
 \examples{
 \dontrun{

@@ -44,11 +44,18 @@ dynamic_lm <- function(...) {
 #'
 #' @param lmdata  An object of class "LMdataframe", this can be created by
 #'   running [dynamicLM::stack_data()] and [dynamicLM::add_interactions()]
-#' @param formula The formula to be used, remember to include "+cluster(ID)" for
+#' @param formula The formula to be used, remember to include `+cluster(ID)` for
 #'  the column that indicates the ID of the individual for robust error
 #'  estimates.
 #'  Note that transformations (e.g., `x1*x2`) cannot be used in the formula and
 #'  factors/categorical variables must first be made into dummy variables.
+#'
+#'  The formula's LHS for survival data is a [survival::Surv()] object which has
+#'  the form `Surv(LM, time, event)`. For competing risks it is a
+#'  [prodlim::Hist()] object which has the form `Hist(time, event, LM)`. The RHS
+#'  is variables (e.g., `x + x_1 + x_2`) and must have `+ cluster(ID)` for
+#'  robust error estimates. See example.
+#'
 #' @param type "coxph" or "CSC"/"CauseSpecificCox"
 #' @param method A character string specifying the method for tie handling.
 #'   Default is "breslow". More information can be found in [survival::coxph()].

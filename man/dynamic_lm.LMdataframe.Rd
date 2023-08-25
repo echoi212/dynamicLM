@@ -19,11 +19,17 @@ landmark dataset}
 \item{lmdata}{An object of class "LMdataframe", this can be created by
 running \code{\link[=stack_data]{stack_data()}} and \code{\link[=add_interactions]{add_interactions()}}}
 
-\item{formula}{The formula to be used, remember to include "+cluster(ID)" for
+\item{formula}{The formula to be used, remember to include \code{+cluster(ID)} for
 the column that indicates the ID of the individual for robust error
 estimates.
 Note that transformations (e.g., \code{x1*x2}) cannot be used in the formula and
-factors/categorical variables must first be made into dummy variables.}
+factors/categorical variables must first be made into dummy variables.
+
+The formula's LHS for survival data is a \code{\link[survival:Surv]{survival::Surv()}} object which has
+the form \code{Surv(LM, time, event)}. For competing risks it is a
+\code{\link[prodlim:Hist]{prodlim::Hist()}} object which has the form \code{Hist(time, event, LM)}. The RHS
+is variables (e.g., \code{x + x_1 + x_2}) and must have \code{+ cluster(ID)} for
+robust error estimates. See example.}
 
 \item{type}{"coxph" or "CSC"/"CauseSpecificCox"}
 
